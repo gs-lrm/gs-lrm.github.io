@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="Fast feed-forward text-to-3D">
+        <meta name="keywords" content="Instant3D, Text-to-3D">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>GS-LRM: Large Reconstruction Model for 3D Gaussian Splatting</title>
+        <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+        <link rel="stylesheet" href="./static/css/bulma.min.css">
+        <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+        <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+        <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+        <link rel="stylesheet" href="./static/css/index.css">
+        <!-- <link rel="icon" href="./static/images/favicon.svg"> -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script defer src="./static/js/fontawesome.all.min.js"></script>
+        <script src="./static/js/bulma-carousel.min.js"></script>
+        <script src="./static/js/bulma-slider.min.js"></script>
+        <script src="./static/js/index.js"></script>
+        <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+        <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.156.1/build/three.module.js",
+        "three/controls/OrbitControls": "https://unpkg.com/three@0.156.1/examples/jsm/controls/OrbitControls.js",
+        "three/libs/stats": "https://unpkg.com/three@0.156.1/examples/jsm/libs/stats.module.js"
+      }
+    }
+        </script>
+        <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
+        <style>
+        model-viewer {
+            width: 300px;
+            height: 300px;
+        }
+        </style>
+    </head>
+    <body>
+        <section class="hero">
+            <div class="hero-body">
+                <div class="container is-max-desktop">
+                    <div class="columns is-centered">
+                        <div class="column has-text-centered">
+                            <h1 class="title is-1 publication-title">
+                                <span class="dnerf">GS-LRM: Large Reconstruction Model for 3D Gaussian Splatting</span>
+                            </h1>
+                            <div class="is-size-5 publication-authors">
+                                <span class="author-block">Anonymous Authors</span>
+                                <p>
+                                    <br>
+                                </p>
+                                <span class="author-block">
+                                    <strong>
+                                        High-quality 3D Gaussian primitives from 2-4 posed sparse images within 0.23
+                                    second
+                                    </strong>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="hero teaser">
+            <div class="container is-max-desktop">
+                <h2 class="title is-3">
+                    <center>Results on Amazon Berkeley Objects</center>
+                </h2>
+                <h4 class="subtitle is-4">
+                    <center>
+                        <a href="./index.html">(Click to return to homepage)</a>
+                    </center>
+                </h4>
+                <div class="hero-body">
+                    <div class="columns is-1 is-multiline is-mobile">
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/21_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/21_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/45_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/45_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/63_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/63_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                    </div>
+                    <div class="columns is-1 is-multiline is-mobile">
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/147_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/147_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/159_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/159_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/186_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/186_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                    </div>
+                    <div class="columns is-1 is-multiline is-mobile">
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/222_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/222_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/245_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/245_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/270_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/270_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                    </div>
+                    <div class="columns is-1 is-multiline is-mobile">
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/293_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/293_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/313_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/313_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/316_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/316_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                    </div>
+                    <div class="columns is-1 is-multiline is-mobile">
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/334_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/334_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/380_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/380_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/390_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/390_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                    </div>
+                    <div class="columns is-1 is-multiline is-mobile">
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/420_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/420_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/438_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/438_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/495_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/495_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                    </div>
+                    <div class="columns is-1 is-multiline is-mobile">
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/590_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/590_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/600_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/600_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/605_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/605_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                    </div>
+                    <div class="columns is-1 is-multiline is-mobile">
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/656_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/656_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/668_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/668_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/694_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/694_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                    </div>
+                    <div class="columns is-1 is-multiline is-mobile">
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/755_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/755_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/868_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/868_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/925_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/925_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                    </div>
+                    <div class="columns is-1 is-multiline is-mobile">
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/960_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/960_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/962_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/962_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                        <div class="column pb-0 mb-0 is-one-third" style="text-align:center;">
+                            <video
+                                id="teaser"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                controls
+                                height="100%"
+                            >
+                                <source src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/965_turntable_with_input.mp4" type="video/mp4">
+                            </video>
+                            <a href="viewer/index.html?url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/object_assets/abo/965_gaussians.ply&is_object=true">
+                                Open
+                            interactive viewer
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <footer class="footer">
+                <div class="container">
+                    <div class="columns is-centered">
+                        <div class="column is-8">
+                            <div class="content">
+                                <p>
+                                    We borrow the source code of this website from
+                                    <a href="https://github.com/nerfies/nerfies.github.io">HERE</a>
+                                    .
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </body>
+    </html>

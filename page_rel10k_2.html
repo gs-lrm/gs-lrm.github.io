@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Fast feed-forward text-to-3D">
+    <meta name="keywords" content="Instant3D, Text-to-3D">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GS-LRM: Large Reconstruction Model for 3D Gaussian Splatting</title>
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+    <!-- <link rel="icon" href="./static/images/favicon.svg"> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script src="./static/js/bulma-carousel.min.js"></script>
+    <script src="./static/js/bulma-slider.min.js"></script>
+    <script src="./static/js/index.js"></script>
+    <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.156.1/build/three.module.js",
+        "three/controls/OrbitControls": "https://unpkg.com/three@0.156.1/examples/jsm/controls/OrbitControls.js",
+        "three/libs/stats": "https://unpkg.com/three@0.156.1/examples/jsm/libs/stats.module.js"
+      }
+    }
+        </script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
+    <style>
+        model-viewer {
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container is-max-desktop">
+                <div class="columns is-centered">
+                    <div class="column has-text-centered">
+                        <h1 class="title is-1 publication-title">
+                            <span class="dnerf">GS-LRM: Large Reconstruction Model for 3D Gaussian Splatting</span>
+                        </h1>
+                        <div class="is-size-5 publication-authors">
+                            <span class="author-block">Anonymous Authors</span>
+                            <p>
+                                <br>
+                            </p>
+                            <span class="author-block">
+                                <strong>High-quality 3D Gaussian primitives from 2-4 posed sparse images within 0.23
+                                    second</strong>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="hero teaser">
+        <div class="container is-max-desktop">
+            <h2 class="title is-3">
+                <center>Results on RealEstate10K</center>
+            </h2>
+            <h4 class="subtitle is-4">
+                <center>
+                    <a href="./index.html">(Click to return to homepage)</a>
+                </center>
+            </h4>
+<div class="hero-body">
+        <div class="columns is-1 is-multiline is-mobile">
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline controls  height="100%">
+              <source
+                src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000982_input_traj.mp4"
+                type="video/mp4">
+            </video>
+
+            <div style="text-align: center;">
+              <img
+                  src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000982_input.png"
+                  alt="input images"
+                  style="width: 50%; border: 3px solid #c8c8c8;">
+              <br>
+              <a target="_blank"
+              href="./viewer/index.html?is_object=false&url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000982_gaussians.ply">
+              Open interactive viewer</a>
+            </div>
+          </div>
+
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline controls  height="100%">
+              <source
+                src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000011_input_traj.mp4"
+                type="video/mp4">
+            </video>
+
+            <div style="text-align: center;">
+              <img
+                  src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000011_input.png"
+                  alt="input images"
+                  style="width: 50%; border: 3px solid #c8c8c8;">
+              <br>
+              <a target="_blank"
+              href="./viewer/index.html?is_object=false&url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000011_gaussians.ply">
+              Open interactive viewer</a>
+            </div>
+          </div>
+        </div>
+    
+        <div class="columns is-1 is-multiline is-mobile">
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline controls  height="100%">
+              <source
+                src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000034_input_traj.mp4"
+                type="video/mp4">
+            </video>
+
+            <div style="text-align: center;">
+              <img
+                  src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000034_input.png"
+                  alt="input images"
+                  style="width: 50%; border: 3px solid #c8c8c8;">
+              <br>
+              <a target="_blank"
+              href="./viewer/index.html?is_object=false&url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000034_gaussians.ply">
+              Open interactive viewer</a>
+            </div>
+          </div>
+
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline controls  height="100%">
+              <source
+                src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000722_input_traj.mp4"
+                type="video/mp4">
+            </video>
+
+            <div style="text-align: center;">
+              <img
+                  src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000722_input.png"
+                  alt="input images"
+                  style="width: 50%; border: 3px solid #c8c8c8;">
+              <br>
+              <a target="_blank"
+              href="./viewer/index.html?is_object=false&url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000722_gaussians.ply">
+              Open interactive viewer</a>
+            </div>
+          </div>
+        </div>
+    
+        <div class="columns is-1 is-multiline is-mobile">
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline controls  height="100%">
+              <source
+                src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/001302_input_traj.mp4"
+                type="video/mp4">
+            </video>
+
+            <div style="text-align: center;">
+              <img
+                  src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/001302_input.png"
+                  alt="input images"
+                  style="width: 50%; border: 3px solid #c8c8c8;">
+              <br>
+              <a target="_blank"
+              href="./viewer/index.html?is_object=false&url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/001302_gaussians.ply">
+              Open interactive viewer</a>
+            </div>
+          </div>
+
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline controls  height="100%">
+              <source
+                src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000239_input_traj.mp4"
+                type="video/mp4">
+            </video>
+
+            <div style="text-align: center;">
+              <img
+                  src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000239_input.png"
+                  alt="input images"
+                  style="width: 50%; border: 3px solid #c8c8c8;">
+              <br>
+              <a target="_blank"
+              href="./viewer/index.html?is_object=false&url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000239_gaussians.ply">
+              Open interactive viewer</a>
+            </div>
+          </div>
+        </div>
+    
+        <div class="columns is-1 is-multiline is-mobile">
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline controls  height="100%">
+              <source
+                src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000826_input_traj.mp4"
+                type="video/mp4">
+            </video>
+
+            <div style="text-align: center;">
+              <img
+                  src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000826_input.png"
+                  alt="input images"
+                  style="width: 50%; border: 3px solid #c8c8c8;">
+              <br>
+              <a target="_blank"
+              href="./viewer/index.html?is_object=false&url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000826_gaussians.ply">
+              Open interactive viewer</a>
+            </div>
+          </div>
+
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline controls  height="100%">
+              <source
+                src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000829_input_traj.mp4"
+                type="video/mp4">
+            </video>
+
+            <div style="text-align: center;">
+              <img
+                  src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000829_input.png"
+                  alt="input images"
+                  style="width: 50%; border: 3px solid #c8c8c8;">
+              <br>
+              <a target="_blank"
+              href="./viewer/index.html?is_object=false&url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000829_gaussians.ply">
+              Open interactive viewer</a>
+            </div>
+          </div>
+        </div>
+    
+        <div class="columns is-1 is-multiline is-mobile">
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline controls  height="100%">
+              <source
+                src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000021_input_traj.mp4"
+                type="video/mp4">
+            </video>
+
+            <div style="text-align: center;">
+              <img
+                  src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000021_input.png"
+                  alt="input images"
+                  style="width: 50%; border: 3px solid #c8c8c8;">
+              <br>
+              <a target="_blank"
+              href="./viewer/index.html?is_object=false&url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000021_gaussians.ply">
+              Open interactive viewer</a>
+            </div>
+          </div>
+
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline controls  height="100%">
+              <source
+                src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000003_input_traj.mp4"
+                type="video/mp4">
+            </video>
+
+            <div style="text-align: center;">
+              <img
+                  src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000003_input.png"
+                  alt="input images"
+                  style="width: 50%; border: 3px solid #c8c8c8;">
+              <br>
+              <a target="_blank"
+              href="./viewer/index.html?is_object=false&url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000003_gaussians.ply">
+              Open interactive viewer</a>
+            </div>
+          </div>
+        </div>
+    
+        <div class="columns is-1 is-multiline is-mobile">
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline controls  height="100%">
+              <source
+                src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000821_input_traj.mp4"
+                type="video/mp4">
+            </video>
+
+            <div style="text-align: center;">
+              <img
+                  src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000821_input.png"
+                  alt="input images"
+                  style="width: 50%; border: 3px solid #c8c8c8;">
+              <br>
+              <a target="_blank"
+              href="./viewer/index.html?is_object=false&url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000821_gaussians.ply">
+              Open interactive viewer</a>
+            </div>
+          </div>
+
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline controls  height="100%">
+              <source
+                src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000862_input_traj.mp4"
+                type="video/mp4">
+            </video>
+
+            <div style="text-align: center;">
+              <img
+                  src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000862_input.png"
+                  alt="input images"
+                  style="width: 50%; border: 3px solid #c8c8c8;">
+              <br>
+              <a target="_blank"
+              href="./viewer/index.html?is_object=false&url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000862_gaussians.ply">
+              Open interactive viewer</a>
+            </div>
+          </div>
+        </div>
+    
+        <div class="columns is-1 is-multiline is-mobile">
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline controls  height="100%">
+              <source
+                src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000041_input_traj.mp4"
+                type="video/mp4">
+            </video>
+
+            <div style="text-align: center;">
+              <img
+                  src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000041_input.png"
+                  alt="input images"
+                  style="width: 50%; border: 3px solid #c8c8c8;">
+              <br>
+              <a target="_blank"
+              href="./viewer/index.html?is_object=false&url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000041_gaussians.ply">
+              Open interactive viewer</a>
+            </div>
+          </div>
+
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline controls  height="100%">
+              <source
+                src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000616_input_traj.mp4"
+                type="video/mp4">
+            </video>
+
+            <div style="text-align: center;">
+              <img
+                  src="https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000616_input.png"
+                  alt="input images"
+                  style="width: 50%; border: 3px solid #c8c8c8;">
+              <br>
+              <a target="_blank"
+              href="./viewer/index.html?is_object=false&url=https://huggingface.co/datasets/tempdatasest/datasetv2/resolve/main/scene_assets/more/000616_gaussians.ply">
+              Open interactive viewer</a>
+            </div>
+          </div>
+        </div>
+    </div>
+
+        </div>
+
+
+
+
+
+
+    </section>
+    <footer class="footer">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-8">
+                    <div class="content">
+                        <p>
+                            We borrow the source code of this website from
+                            <a href="https://github.com/nerfies/nerfies.github.io">HERE</a>
+                            .
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
